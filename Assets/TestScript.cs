@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -10,23 +11,29 @@ public class TestScript : MonoBehaviour
     private int currentFrame;
     private float cubeSpeed;
     private StringBuilder sb = new();
-    
+
     private int currentTest;
-    private int testCount = 300;
+    public int testCount = 100;
+    public int resetAfterFrames = 15;
 
     private void Start()
     {
+        Debug.Log($"Will take {testCount * resetAfterFrames * Time.fixedDeltaTime} seconds");
         originalPosition = cube.position;
         ResetTest();
     }
 
     private void ResetTest()
     {
+        if (currentTest != 0)
+            sb.AppendLine($"{cubeSpeed},{sphere.velocity.x}");
         if (currentTest > testCount)
         {
-            Debug.Log("Done!");
+            Debug.Log(sb);
+            Debug.Log("Done! Copy the above log as CSV.");
             EditorApplication.ExitPlaymode();
         }
+
         sphere.position = Vector3.zero;
         sphere.rotation = Quaternion.identity;
         sphere.velocity = Vector3.zero;
@@ -41,11 +48,9 @@ public class TestScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (currentFrame++ == 15)
+        if (currentFrame++ == resetAfterFrames)
         {
             currentFrame = 0;
-            sb.AppendLine($"{cubeSpeed},{sphere.velocity.x}");
-            Debug.Log(sb);
             ResetTest();
         }
 
