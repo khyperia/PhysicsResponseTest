@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -52,8 +51,11 @@ public class TestScript : MonoBehaviour
         {
             currentFrame = 0;
             ResetTest();
+            if (!cube.isKinematic)
+                cube.AddForce(new Vector3(cubeSpeed, 0, 0), ForceMode.VelocityChange);
         }
 
-        cube.MovePosition(cube.position + new Vector3(cubeSpeed * Time.fixedDeltaTime, 0, 0));
+        if (cube.isKinematic)
+            cube.MovePosition(cube.position + new Vector3(cubeSpeed * Time.fixedDeltaTime, 0, 0));
     }
 }
